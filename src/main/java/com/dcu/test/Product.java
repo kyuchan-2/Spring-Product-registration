@@ -1,21 +1,29 @@
 package com.dcu.test;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 
 @Entity
+@Getter
+@Setter
 public class Product {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(columnDefinition = "TEXT")
-    public String image;
+    private String image;
 
     @Column(nullable = false, unique = true)
-    public String title;
-    public Integer price;
+    private String title;
+    private Integer price;
 
     @Column(length = 100)
-    public String company;
-    public LocalDate release_date;
+    private String company;
+    private LocalDate release_date;
+
+
 }
