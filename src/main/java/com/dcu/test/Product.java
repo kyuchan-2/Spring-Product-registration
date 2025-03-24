@@ -1,11 +1,10 @@
 package com.dcu.test;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 
 @Entity
-public class Products {
+public class Product {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long id;
 
@@ -13,7 +12,7 @@ public class Products {
     public String image;
 
     @Column(nullable = false, unique = true)
-    public String name;
+    public String title;
     public Integer price;
 
     @Column(length = 100)
