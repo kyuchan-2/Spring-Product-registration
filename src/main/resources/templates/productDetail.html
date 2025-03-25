@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 상세 페이지</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #EEE;
+        }
+    </style>
+</head>
+<body>
+<!-- Header -->
+<nav th:replace="~{/fragments/header.html :: header}"></nav>
+
+<!-- Main Content -->
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="row g-0">
+                    <div class="col-md-6 bg-light">
+                        <img th:src="${product.image}" class="img-fluid w-100 h-100" alt="상품 이미지"
+                             style="object-fit: fill;">
+                    </div>
+                    <div class="col-md-6 d-flex align-items-center">
+                        <div class="p-5">
+                            <h1 th:text="${product.title}" class="mb-4 fw-bold"></h1>
+                            <div class="mb-4">
+                                <label class="form-label mb-1 fw-bold">제조사</label>
+                                <p th:text="${product.company}" class="fs-4 fw-semibold mb-0"></p>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label mb-1 fw-bold">가격</label>
+                                <p th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')} + '원'"
+                                   class="fs-4 fw-bold text-primary mb-0"></p>
+                            </div>
+                            <div class="mb-5">
+                                <label class="form-label mb-1 fw-bold">출시일</label>
+                                <p th:text="${product.release_date}" class="fs-5 text-secondary mb-0 fw-bold"></p>
+                            </div>
+                            <div>
+                                <a href="/productList" class="btn btn-dark rounded px-4 fw-bold">상품 목록</a>
+                                <a th:href="@{'/productEdit/' + ${product.id}}"
+                                   class="btn btn-primary rounded px-4 fw-bold">상품 수정</a>
+                                <form th:action="@{/productDelete}" method="post"
+                                      onsubmit="return confirm('정말 삭제 하시겠습니까?')" class="d-inline">
+                                    <input type="hidden" th:name="id" th:value="${product.id}">
+                                    <button type="submit" class="btn btn-danger rounded px-4 fw-bold">상품 삭제</button>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+</html>
+
