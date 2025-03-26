@@ -1,4 +1,4 @@
-package com.dcu.test;
+package com.dcu.test.product;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,4 +1,4 @@
-package com.dcu.test;
+package com.dcu.test.product;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -16,16 +16,16 @@ import java.util.Optional;
 public class ProductsController {
     private final ProductService productService;
 
-    @GetMapping("/productList")
+    @GetMapping("/product/productList")
     String productList(Model model) {
         List<Product> products = productService.productFindAll();
         model.addAttribute("products", products);
-        return "productList";
+        return "/productList";
     }
 
-    @GetMapping("/productRegister")
+    @GetMapping("/product/productRegister")
     String productRegister(Model model) {
-        return "productRegistration";
+        return "/productRegistration";
     }
 
     @PostMapping("/productRegister")

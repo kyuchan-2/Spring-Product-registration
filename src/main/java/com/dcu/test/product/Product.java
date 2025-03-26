@@ -1,4 +1,4 @@
-package com.dcu.test;
+package com.dcu.test.product;
 
 import jakarta.persistence.*;
 import lombok.Getter;
