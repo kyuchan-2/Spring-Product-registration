@@ -20,12 +20,13 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    Optional<Product> productFinById(Long id) {
+    Optional<Product> productFindById(Long id) {
         return productRepository.findById(id);
     }
 
     void productDelete(Long id) {
         productRepository.deleteById(id);
     }
+
 
 }

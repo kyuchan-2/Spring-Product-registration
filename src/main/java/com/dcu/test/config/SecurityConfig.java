@@ -1,7 +1,8 @@
-package com.dcu.test;
+package com.dcu.test.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -16,13 +17,27 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests(authorization -> authorization
-                .requestMatchers("/**").permitAll() //어떠한 제제없이 누구나 들어올수있게 해주는 코드
+                .requestMatchers("/images/*","/","/memberSignUp","/memberLogin").permitAll()
+                .anyRequest().authenticated()
+        );
+        httpSecurity.formLogin(form->form
+                .loginPage("/memberLogin")
+                .usernameParameter("email")
+                .passwordParameter("password")
+                .defaultSuccessUrl("/")
+                .permitAll()
+        );
+        httpSecurity.logout(logout -> logout
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIDNID")
+
         );
         return httpSecurity.build();
     }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); //BCrypt 해씽기법 중 하나
-    }
 
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder(); // 대표 적인 해싱 기법
+    }
 }

@@ -16,16 +16,18 @@ import java.util.Optional;
 public class ProductsController {
     private final ProductService productService;
 
-    @GetMapping("/product/productList")
+
+
+    @GetMapping({"/","/productList"})
     String productList(Model model) {
         List<Product> products = productService.productFindAll();
         model.addAttribute("products", products);
-        return "/productList";
+        return "product/productList";
     }
 
-    @GetMapping("/product/productRegister")
-    String productRegister(Model model) {
-        return "/productRegistration";
+    @GetMapping("/productRegister")
+    String productRegister() {
+        return "product/productRegistration";
     }
 
     @PostMapping("/productRegister")
@@ -38,11 +40,11 @@ public class ProductsController {
 
     @GetMapping("/productDetail/{id}")
     String productDetail(@PathVariable Long id, Model model) {
-        Optional<Product> product = productService.productFinById(id);
+        Optional<Product> product = productService.productFindById(id);
 
         if (product.isPresent()) {
             model.addAttribute("product", product.get());
-            return "productDetail";
+            return "product/productDetail";
         } else {
             return "redirect:/productList";
         }
@@ -50,11 +52,11 @@ public class ProductsController {
 
     @GetMapping("/productEdit/{id}")
     String productEdit(@PathVariable Long id, Model model) {
-        Optional<Product> product = productService.productFinById(id);
+        Optional<Product> product = productService.productFindById(id);
 
         if (product.isPresent()) {
             model.addAttribute("product", product.get());
-            return "productEdit";
+            return "product/productEdit";
         } else {
             return "redirect:/productList";
         }

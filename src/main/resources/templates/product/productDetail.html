@@ -42,13 +42,12 @@
                                 <p th:text="${product.release_date}" class="fs-5 text-secondary mb-0 fw-bold"></p>
                             </div>
                             <div>
-                                <a href="/productList" class="btn btn-dark rounded px-4 fw-bold">상품 목록</a>
+                                <a href="/productList" class="btn btn-dark rounded px-1 fw-bold">상품 목록</a>
                                 <a th:href="@{'/productEdit/' + ${product.id}}"
-                                   class="btn btn-primary rounded px-4 fw-bold">상품 수정</a>
-                                <form th:action="@{/productDelete}" method="post"
-                                      onsubmit="return confirm('정말 삭제 하시겠습니까?')" class="d-inline">
-                                    <input type="hidden" th:name="id" th:value="${product.id}">
-                                    <button type="submit" class="btn btn-danger rounded px-4 fw-bold">상품 삭제</button>
+                                   class="btn btn-primary rounded px-1 fw-bold">상품 수정</a>
+                                <form th:action="@{/productDelete}" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');" class="d-inline">
+                                    <input type="hidden" name="id" th:value="${product.id}">
+                                    <button type="submit" class="btn btn-danger rounded px-1 fw-bold">상품 삭제</button>
                                 </form>
 
                             </div>
