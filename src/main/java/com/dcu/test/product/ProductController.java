@@ -22,59 +22,73 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductService productService;
-    private final ProductRepository productRepository;
     private final FileService fileService;
 
     // 이미지 업로드 경로 설정
     private final String imageUploadDir = "src/main/resources/static/images/";
 
+    // 상품 목록 조회
     @GetMapping({"/", "/productList"})
-    String productList(Model model) {
-        List<ProductDTO> products = productService.productFindAll();
+    String productList(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
+        List<ProductDTO> products;
+
+        // 검색어가 있을 경우 검색된 상품을 가져오고, 없을 경우 전체 상품을 가져옴
+        if (keyword != null && !keyword.isEmpty()) {
+            products = productService.searchProducts(keyword); // 검색 기능 호출
+        } else {
+            products = productService.productFindAll(); // 전체 상품 조회
+        }
+
         model.addAttribute("products", products);
-        return "product/productList";
+        model.addAttribute("keyword", keyword); // 검색어 유지
+        return "product/productList";  // 상품 목록 화면
     }
 
+    // 상품 등록 페이지
     @GetMapping("/productRegister")
     String productRegister() {
         return "product/productRegistration";
     }
 
+    // 상품 등록 처리
     @PostMapping("/productRegister")
     String productRegister(@ModelAttribute ProductCreateDTO productCreateDTO) throws IOException {
-        // 파일이 업로드되었을 경우 처리
+        // 이미지 파일 업로드
         String imagePath = fileService.imageSave(productCreateDTO.getImage());
-        productService.productCreate(productCreateDTO, imagePath);
+        productService.productCreate(productCreateDTO, imagePath);  // 상품 생성
         return "redirect:/productList";
     }
 
+    // 상품 상세 보기
     @GetMapping("/productDetail/{id}")
     String productDetail(@PathVariable Long id, Model model) {
         Optional<Product> product = productService.productFindById(id);
 
         if (product.isPresent()) {
             model.addAttribute("product", product.get());
-            return "product/productDetail";
+            return "product/productDetail";  // 상품 상세 화면
         } else {
-            return "redirect:/productList";
+            return "redirect:/productList";  // 상품이 없으면 목록으로 돌아감
         }
     }
 
+    // 상품 수정 페이지
     @GetMapping("/productEdit/{id}")
     String productEdit(@PathVariable Long id, Model model) {
         Optional<Product> product = productService.productFindById(id);
 
         if (product.isPresent()) {
             model.addAttribute("product", product.get());
-            return "product/productEdit";
+            return "product/productEdit";  // 상품 수정 페이지
         } else {
             return "redirect:/productList";
         }
     }
 
+    // 상품 수정 처리
     @PostMapping("/productEdit")
     String productEdit(@ModelAttribute Product product, @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
-        // 파일이 업로드되었을 경우 처리
+        // 이미지 파일 업로드
         if (imageFile != null && !imageFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
             Path targetLocation = Paths.get(imageUploadDir + fileName);
@@ -82,11 +96,11 @@ public class ProductController {
             product.setImage("images/" + fileName);  // 이미지 경로 설정
         }
 
-        // 상품 수정 저장
-        productService.productSave(product);
+        productService.productSave(product);  // 상품 저장
         return "redirect:/productList";
     }
 
+    // 상품 삭제 처리
     @PostMapping("/productDelete")
     String productDelete(@ModelAttribute Product product) {
         productService.productDelete(product.getId());

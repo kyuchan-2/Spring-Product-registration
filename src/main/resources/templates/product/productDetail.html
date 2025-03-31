@@ -34,7 +34,7 @@
                             </div>
                             <div class="mb-4">
                                 <label class="form-label mb-1 fw-bold">가격</label>
-                                <p th:text="${#numbers.formatInteger(product.price, 3, 'COMMA')} + '원'"
+                                <p th:text="${#numbers.formatInteger(product.price, 1, 'COMMA')} + '원'"
                                    class="fs-4 fw-bold text-primary mb-0"></p>
                             </div>
                             <div class="mb-5">
