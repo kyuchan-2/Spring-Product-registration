@@ -1,5 +1,7 @@
 package com.dcu.test.product;
 
+import com.dcu.test.ProductCreateDTO;
+import com.dcu.test.ProductDTO;
 import com.dcu.test.security.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -8,16 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.UUID;
 import java.util.List;
 import java.util.Optional;
-import java.time.LocalDate;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,7 +30,7 @@ public class ProductController {
 
     @GetMapping({"/", "/productList"})
     String productList(Model model) {
-        List<Product> products = productService.productFindAll();
+        List<ProductDTO> products = productService.productFindAll();
         model.addAttribute("products", products);
         return "product/productList";
     }
@@ -42,10 +41,10 @@ public class ProductController {
     }
 
     @PostMapping("/productRegister")
-    String productRegister(MultipartFile image, String title, Integer price, String company, @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate release_date) throws IOException {
+    String productRegister(@ModelAttribute ProductCreateDTO productCreateDTO) throws IOException {
         // 파일이 업로드되었을 경우 처리
-        String imagePath = fileService.imageSave(image);
-        productService.productCreate(imagePath, title, price, company, release_date);
+        String imagePath = fileService.imageSave(productCreateDTO.getImage());
+        productService.productCreate(productCreateDTO, imagePath);
         return "redirect:/productList";
     }
 

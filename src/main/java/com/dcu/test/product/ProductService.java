@@ -1,13 +1,15 @@
 package com.dcu.test.product;
 
+import com.dcu.test.ProductCreateDTO;
+import com.dcu.test.ProductDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -15,17 +17,24 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     // 모든 상품 조회 메서드
-    List<Product> productFindAll() {
-        return productRepository.findAll();
+    List<ProductDTO> productFindAll() {
+        return productRepository.findAll().stream().map(product -> {
+            ProductDTO productDTO = new ProductDTO();
+            productDTO.setId(product.getId());
+            productDTO.setImage(product.getImage());
+            productDTO.setTitle(product.getTitle());
+            productDTO.setPrice(product.getPrice());
+            return productDTO;
+        }).collect(Collectors.toList());
     }
 
-    void productCreate(String imagePath, String title, Integer price, String company, LocalDate release_date) {
+    void productCreate(ProductCreateDTO productCreateDTO, String imagePath) {
         Product product = new Product();
         product.setImage(imagePath);
-        product.setTitle(title);
-        product.setPrice(price);
-        product.setCompany(company);
-        product.setRelease_date(release_date);
+        product.setTitle(productCreateDTO.getTitle());
+        product.setPrice(productCreateDTO.getPrice());
+        product.setCompany(productCreateDTO.getCompany());
+        product.setRelease_date(productCreateDTO.getRelease_date());
         productRepository.save(product);
     }
 
