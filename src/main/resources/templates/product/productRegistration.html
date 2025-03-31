@@ -41,11 +41,11 @@
             <h1 class="form-title">상품 등록</h1>
             <hr>
         </div>
-        <form action="/productRegister" method="post" class="needs-validation" novalidate>
+        <form action="/productRegister" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
             <div class="mb-3">
-                <label for="image" class="form-label">상품 이미지 URL</label>
-                <input type="text" class="form-control" id="image" name="image"
-                       placeholder="예: https://example.com/image.jpg" required>
+                <label for="image" class="form-label">상품 이미지</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*" required>
+
             </div>
             <div class="mb-3">
                 <label for="title" class="form-label">상품명</label>

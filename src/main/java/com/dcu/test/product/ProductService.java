@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,16 @@ public class ProductService {
     // 모든 상품 조회 메서드
     List<Product> productFindAll() {
         return productRepository.findAll();
+    }
+
+    void productCreate(String imagePath, String title, Integer price, String company, LocalDate release_date) {
+        Product product = new Product();
+        product.setImage(imagePath);
+        product.setTitle(title);
+        product.setPrice(price);
+        product.setCompany(company);
+        product.setRelease_date(release_date);
+        productRepository.save(product);
     }
 
     void productSave(Product product) {
