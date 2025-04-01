@@ -1,10 +1,10 @@
-<nav class="navbar navbar-expand-lg bg-white shadow-sm py-3 px-4" th:fragment="header" xmlns:th="http://www.w3.org/1999/xhtml"
+<nav class="navbar navbar-expand-lg bg-white shadow-sm py-3 px-4" th:fragment="header" xmlns:th=""
      xmlns:sec="http://www.w3.org/1999/xhtml">
     <div class="container-fluid">
         <!-- 로고 -->
         <a class="navbar-brand d-flex align-items-center fw-bold text-dark" href="/">
             <img src="/images/logo.png" alt="MyShop 로고" width="45" height="45" class="me-2 rounded-circle">
-            <span class="fs-4">MyShop</span>
+            <span class="fs-4">ShoeSwap</span>
         </a>
 
         <!-- 햄버거 버튼 (모바일과 데스크탑 모두 보이게) -->
@@ -16,11 +16,11 @@
 
         <div class="collapse navbar-collapse" id="navbarMenu">
             <!-- 중앙 검색창 -->
-            <form class="d-flex mx-auto w-50 position-relative" action="/productList" method="get">
-                <input class="form-control rounded-pill px-4 shadow-sm border-dark" type="search" placeholder="검색어를 입력하세요..."
-                       name="keyword" aria-label="Search">
+            <form action="/productList" method="get" class="d-flex mx-auto w-50 position-relative">
+                <input th:value="${param.keyword}" class="form-control rounded-pill px-4 shadow-sm border-dark" type="text" name="keyword"
+                       placeholder="검색어를 입력하세요...">
                 <button class="btn position-absolute end-0 top-50 translate-middle-y me-2 text-dark" type="submit">
-                    <i class="bi bi-search fs-5">🔍</i>
+                    <i class="bi bi-search"></i>
                 </button>
             </form>
 

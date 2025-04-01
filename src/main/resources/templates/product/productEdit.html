@@ -9,6 +9,7 @@
         body {
             background-color: #EEE;
         }
+
         .form-container {
             max-width: 600px;
             margin: auto;
@@ -41,25 +42,27 @@
             <h1 class="form-title">상품 수정</h1>
             <hr>
         </div>
-        <form action="/productEdit" method="post" class="needs-validation" novalidate>
+        <form action="/productEdit" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <input th:value="${product.id}" type="hidden" name="id">
+            <input th:value="${product.image}" type="hidden" name="originalImage">
             <div class="mb-3">
                 <label for="id" class="form-label">ID</label>
                 <input th:value="${product.id}" type="text" class="form-control" id="id" name="id" readonly>
             </div>
             <div class="mb-3">
-                <label for="image" class="form-label">상품 이미지 URL</label>
-                <input th:value="${product.image}" type="text" class="form-control" id="image" name="image"
-                       placeholder="예: https://example.com/image.jpg" required>
+                <label for="image" class="form-label">상품 이미지</label>
+                <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                <div class="form-text">이미지를 변경하지 않으면 기존 이미지가 유지됩니다.</div>
             </div>
             <div class="mb-3">
                 <label for="title" class="form-label">상품명</label>
                 <input th:value="${product.title}" type="text" class="form-control" id="title" name="title"
-                       placeholder="예: Galaxy" required>
+                       placeholder="예: 에어포스" required>
             </div>
             <div class="mb-3">
                 <label for="company" class="form-label">제조사</label>
                 <input th:value="${product.company}" type="text" class="form-control" id="company" name="company"
-                       placeholder="예: Samsung" required>
+                       placeholder="예: NIKE" required>
             </div>
             <div class="mb-3">
                 <label for="price" class="form-label">가격</label>

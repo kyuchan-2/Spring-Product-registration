@@ -101,31 +101,23 @@
                 <div class="card-body">
                     <h2 class="fw-bold mb-4">회원 정보</h2>
 
-                    <div class="mb-3">
-                        <label class="form-label mb-1 fw-bold">이메일</label>
-                        <p class="form-control-plaintext" th:text="${member.email}">example@email.com</p>
-                    </div>
+                    <form id="memberForm">
+                        <div class="mb-3">
+                            <label class="form-label mb-1 fw-bold">이메일</label>
+                            <input type="text" class="form-control" id="email" th:value="${member.email}" disabled>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label mb-1 fw-bold">이름</label>
-                        <p class="form-control-plaintext" th:text="${member.name}">홍길동</p>
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label mb-1 fw-bold">이름</label>
+                            <input type="text" class="form-control" id="name" th:value="${member.name}" disabled>
+                        </div>
 
-                    <div class="mb-3">
-                        <label class="form-label mb-1 fw-bold">생년월일</label>
-                        <p class="form-control-plaintext" th:text="${member.birth}">1990-01-01</p>
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label mb-1 fw-bold">생년월일</label>
+                            <input type="text" class="form-control" id="birth" th:value="${member.birth}" disabled>
+                        </div>
 
-                    <div class="d-flex gap-3 mt-4">
-                        <a href="/" class="btn btn-home rounded px-4 fw-bold">홈으로</a>
-                        <a href="#" class="btn btn-edit rounded px-4 fw-bold disabled">회원 정보 수정 (준비 중)</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</main>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+                        <div class="d-flex gap-3 mt-4">
+                            <a href="/" class="btn btn-home rounded px-4 fw-bold">홈으로</a>
+                            <button type="button" id="editBtn" class="btn btn-edit rounded px-4 fw-bold">회원 정보 수정</button>
+                            <button type="submit" id="saveBtn" class="btn btn-success rounded px-4 fw-bold" style="display: none;">변경 사항 저장</button>

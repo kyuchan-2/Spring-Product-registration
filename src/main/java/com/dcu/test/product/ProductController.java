@@ -2,6 +2,7 @@ package com.dcu.test.product;
 
 import com.dcu.test.ProductCreateDTO;
 import com.dcu.test.ProductDTO;
+import com.dcu.test.ProductUpdateDTO;
 import com.dcu.test.security.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -29,18 +30,9 @@ public class ProductController {
 
     // 상품 목록 조회
     @GetMapping({"/", "/productList"})
-    String productList(@RequestParam(value = "keyword", required = false) String keyword, Model model) {
-        List<ProductDTO> products;
-
-        // 검색어가 있을 경우 검색된 상품을 가져오고, 없을 경우 전체 상품을 가져옴
-        if (keyword != null && !keyword.isEmpty()) {
-            products = productService.searchProducts(keyword); // 검색 기능 호출
-        } else {
-            products = productService.productFindAll(); // 전체 상품 조회
-        }
-
+    String productList(String keyword, Model model) {
+        List<ProductDTO> products = productService.searchProducts(keyword);
         model.addAttribute("products", products);
-        model.addAttribute("keyword", keyword); // 검색어 유지
         return "product/productList";  // 상품 목록 화면
     }
 
@@ -76,7 +68,6 @@ public class ProductController {
     @GetMapping("/productEdit/{id}")
     String productEdit(@PathVariable Long id, Model model) {
         Optional<Product> product = productService.productFindById(id);
-
         if (product.isPresent()) {
             model.addAttribute("product", product.get());
             return "product/productEdit";  // 상품 수정 페이지
@@ -87,16 +78,8 @@ public class ProductController {
 
     // 상품 수정 처리
     @PostMapping("/productEdit")
-    String productEdit(@ModelAttribute Product product, @RequestParam(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
-        // 이미지 파일 업로드
-        if (imageFile != null && !imageFile.isEmpty()) {
-            String fileName = StringUtils.cleanPath(imageFile.getOriginalFilename());
-            Path targetLocation = Paths.get(imageUploadDir + fileName);
-            Files.copy(imageFile.getInputStream(), targetLocation);
-            product.setImage("images/" + fileName);  // 이미지 경로 설정
-        }
-
-        productService.productSave(product);  // 상품 저장
+    String productEdit(@ModelAttribute ProductUpdateDTO productUpdateDTO) {
+        productService.productUpdate(productUpdateDTO);  // 상품 저장
         return "redirect:/productList";
     }
 

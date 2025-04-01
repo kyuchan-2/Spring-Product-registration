@@ -28,4 +28,8 @@ public class FileService {
         // 저장된 이미지 경로 반환 (웹에서 접근 가능한 경로)
         return "/upload/images/" + fileName;
     }
+
+    public void fileDelete(String file) throws IOException {
+        Files.deleteIfExists(Paths.get("./upload/images").resolve(file));
+    }
 }
