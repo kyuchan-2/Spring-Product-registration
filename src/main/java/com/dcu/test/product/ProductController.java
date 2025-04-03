@@ -8,14 +8,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,10 +29,15 @@ public class ProductController {
 
     // 상품 목록 조회
     @GetMapping({"/", "/productList"})
-    String productList(String keyword, Model model) {
-        List<ProductDTO> products = productService.searchProducts(keyword);
-        model.addAttribute("products", products);
-        return "product/productList";  // 상품 목록 화면
+    String productList(@RequestParam(defaultValue = "0")Integer page, String keyword, Model model, String category) {
+        Pageable pageable = PageRequest.of(page, 6);
+        Page<ProductDTO> productPage = productService.productListPageination(keyword, pageable);
+        model.addAttribute("product", productPage.getContent());
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("category", category);
+        return "product/productList";
     }
 
     // 상품 등록 페이지

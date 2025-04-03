@@ -1,5 +1,6 @@
 package com.dcu.test.member;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,5 +28,23 @@ public class MemberService {
         return memberRepository.findByEmail(email)
                 .orElseThrow(()->new RuntimeException("회원 없음"));
     }
+
+    // 회원 정보 수정
+    @Transactional
+    public void updateMember(Member member) {
+        Member existingMember = memberRepository.findByEmail(member.getEmail())
+                .orElseThrow(() -> new RuntimeException("회원 정보를 찾을 수 없습니다."));
+
+        existingMember.setName(member.getName());
+
+        // 🔥 비밀번호 변경이 있을 때만 암호화 후 저장
+        if (member.getPassword() != null && !member.getPassword().isBlank()) {
+            existingMember.setPassword(passwordEncoder.encode(member.getPassword()));
+        }
+
+        memberRepository.save(existingMember);
+    }
+
+
 
 }

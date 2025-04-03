@@ -14,6 +14,7 @@ public class ProductCreateDTO {
     private String title;
     private Integer price;
     private String company;
+    private String category;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate release_date;

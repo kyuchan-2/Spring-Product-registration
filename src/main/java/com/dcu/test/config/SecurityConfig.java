@@ -2,7 +2,6 @@ package com.dcu.test.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,7 +16,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests(authorization -> authorization
-                .requestMatchers("/images/*","/","/memberSignUp","/memberLogin").permitAll()
+                .requestMatchers("/images/*","/","/memberSignUp","/memberLogin","/upload/images/**").permitAll()
                 .anyRequest().authenticated()
         );
         httpSecurity.formLogin(form->form
@@ -33,6 +32,7 @@ public class SecurityConfig {
                 .deleteCookies("JSESSIDNID")
 
         );
+
         return httpSecurity.build();
     }
 

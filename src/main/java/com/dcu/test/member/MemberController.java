@@ -1,20 +1,25 @@
 package com.dcu.test.member;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
+    private final PasswordEncoder passwordEncoder;
 
 
     @GetMapping("/memberSignUp")
@@ -90,5 +95,73 @@ public class MemberController {
     String memberLogin() {
         return "member/memberLogin";  // 실제 로그인 페이지의 뷰 이름이 맞는지 확인
     }
+
+    @GetMapping("/memberEdit")
+    public String showMemberEditForm(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        if (userDetails == null) {
+            return "redirect:/memberLogin";  // 로그인 안 한 경우 로그인 페이지로 이동
+        }
+
+        Member member = memberService.findMemberByEmail(userDetails.getUsername());
+        model.addAttribute("member", member);
+
+        return "member/memberEdit";  // memberEdit.html로 이동
+    }
+
+
+    // 프로필 수정 처리 후 강제 로그아웃
+    @PostMapping("/memberEdit")
+    public String memberEdit(@AuthenticationPrincipal UserDetails userDetails,
+                             HttpServletRequest request,
+                             @RequestParam String name,
+                             @RequestParam(required = false) String password,
+                             @RequestParam(required = false) String passwordConfirm,  // 🔥 비밀번호 확인 추가
+                             Model model) {
+        if (userDetails == null) {
+            return "redirect:/memberLogin";
+        }
+
+        Member member = memberService.findMemberByEmail(userDetails.getUsername());
+
+        if (name.isBlank()) {
+            model.addAttribute("message", "이름을 입력해주세요.");
+            model.addAttribute("member", member);
+            return "member/memberEdit";
+        }
+
+        member.setName(name);
+
+        // 비밀번호 변경 처리
+        if (password != null && !password.isBlank()) {
+            if (password.length() < 8) {
+                model.addAttribute("message", "비밀번호는 8자 이상이어야 합니다.");
+                model.addAttribute("member", member);
+                return "member/memberEdit";
+            }
+
+            // 🔥 비밀번호 확인 로직 추가
+            if (!password.equals(passwordConfirm)) {
+                model.addAttribute("message", "비밀번호가 일치하지 않습니다.");
+                model.addAttribute("member", member);
+                return "member/memberEdit";
+            }
+
+            member.setPassword(password);  // 🔥 여기서 암호화하지 않음! (서비스 레이어에서 암호화)
+        }
+
+        memberService.updateMember(member);
+
+        // 강제 로그아웃
+        try {
+            request.logout();
+        } catch (ServletException e) {
+            e.printStackTrace();
+        }
+
+        return "redirect:/memberLogin?updateSuccess"; // 수정 후 로그인 페이지로 이동
+    }
+
+
+
 }
 

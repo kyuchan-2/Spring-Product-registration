@@ -16,4 +16,5 @@ public class ProductUpdateDTO {
     private Integer price;
     private String company;
     private LocalDate release_date;
+    private String category;
 }

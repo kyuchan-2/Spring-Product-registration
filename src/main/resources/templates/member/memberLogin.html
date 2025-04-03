@@ -27,6 +27,42 @@
         .btn {
             width: 100%;
         }
+        .login-button {
+            display: inline-block;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            text-decoration: none;
+            width: 120px;  /* 버튼 크기 조정 */
+            margin: 5px;  /* 버튼 간 간격 */
+            box-sizing: border-box;
+        }
+
+        /* 카카오 로그인 버튼 스타일 */
+        .kakao-button {
+            background-color: #FFEB3B; /* 노란색 */
+            color: black;
+            margin-left : 25px
+        }
+
+        /* 구글 로그인 버튼 스타일 */
+        .google-button {
+            background-color: #DB4437; /* 빨간색 */
+            color: black;
+        }
+
+        /* 네이버 로그인 버튼 스타일 */
+        .naver-button {
+            background-color: #1EC800; /* 초록색 */
+            color: black;
+        }
+
+        /* 버튼에 마우스 오버 시 효과 */
+        .login-button:hover {
+            opacity: 0.8;  /* 살짝 투명해지는 효과 */
+        }
     </style>
 </head>
 <body>
@@ -53,7 +89,12 @@
                 <span>이메일 또는 비밀번호가 잘못되었습니다.</span>
             </div>
             <button type="submit" class="btn btn-success fw-bold mb-2 ">로그인</button>
-            <a href="/memberSignUp" class="btn btn-primary fw-bold">회원가입</a>
+            <a href="/memberSignUp" class="btn btn-primary fw-bold">회원가입</a><br><br>
+            <h6 style="text-align : center">소셜 계정으로 로그인</h6>
+                <a href="/oauth2/authorization/kakao" class="login-button kakao-button">Kakao</a>
+                <a href="/oauth2/authorization/google" class="login-button google-button">Google</a>
+                <a href="/oauth2/authorization/naver" class="login-button naver-button">Naver</a>
+
         </form>
     </div>
 </div>

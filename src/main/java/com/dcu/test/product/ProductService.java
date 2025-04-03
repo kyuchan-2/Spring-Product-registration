@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -23,15 +25,21 @@ public class ProductService {
     private final FileService fileService;
 
     // 모든 상품 조회
-    List<ProductDTO> productFindAll() {
-        return productRepository.findAll().stream().map(product -> {
-            ProductDTO productDTO = new ProductDTO();
-            productDTO.setId(product.getId());
-            productDTO.setImage(product.getImage());
-            productDTO.setTitle(product.getTitle());
-            productDTO.setPrice(product.getPrice());
-            return productDTO;
-        }).collect(Collectors.toList());
+    Page<ProductDTO> productListPageination(String keyword, Pageable pageable) {
+        Page<Product> productPage;
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            productPage = productRepository.findByTitleContainingIgnoreCase(keyword, pageable);
+        } else {
+            productPage = productRepository.findAll(pageable);
+        }
+            return productPage.map(product -> {
+                ProductDTO productDTO = new ProductDTO();
+                productDTO.setId(product.getId());
+                productDTO.setTitle(product.getTitle());
+                productDTO.setImage(product.getImage());
+                productDTO.setPrice(product.getPrice());
+                return productDTO;
+            });
     }
 
     void productUpdate(ProductUpdateDTO productUpdateDTO) {
@@ -51,24 +59,27 @@ public class ProductService {
         product.setPrice(productUpdateDTO.getPrice());
         product.setCompany(productUpdateDTO.getCompany());
         product.setRelease_date(productUpdateDTO.getRelease_date());
+        product.setCategory(productUpdateDTO.getCategory());
         productRepository.save(product);
     }
 
     // 검색 기능 추가
-    public List<ProductDTO> searchProducts(String keyword) {
-        List<Product> products;
+    public List<ProductDTO> searchProducts(String keyword, Pageable pageable) {
+        Page<Product> productPage;
         if(keyword != null && !keyword.trim().isEmpty()) {
-            products = productRepository.findByTitleContainingIgnoreCase(keyword);
+            productPage = productRepository.findByTitleContainingIgnoreCase(keyword, pageable);
         } else {
-            products = productRepository.findAll();
+            productPage = productRepository.findAll(pageable);
         }
 
-        return products.stream().map(product -> {
+        return productPage.stream().map(product -> {
                     ProductDTO productDTO = new ProductDTO();
                     productDTO.setId(product.getId());
                     productDTO.setImage(product.getImage());
                     productDTO.setTitle(product.getTitle());
+                    productDTO.setCompany(product.getCompany());
                     productDTO.setPrice(product.getPrice());
+                    productDTO.setCategory(product.getCategory());
                     return productDTO;
                 })
                 .collect(Collectors.toList());
@@ -81,6 +92,7 @@ public class ProductService {
         product.setPrice(productCreateDTO.getPrice());
         product.setCompany(productCreateDTO.getCompany());
         product.setRelease_date(productCreateDTO.getRelease_date());
+        product.setCategory(productCreateDTO.getCategory());
         productRepository.save(product);
     }
 
@@ -94,14 +106,5 @@ public class ProductService {
 
     void productDelete(Long id) {
         productRepository.deleteById(id);
-    }
-
-    private final RestTemplate restTemplate = new RestTemplate();
-
-    public String fetchDataFromExternalApi() {
-        String url = "http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtNcst?serviceKey=Cv1RB2yD%2FK8O58G0AZl%2B80CpfMtlQaqjizVCy0OVTle8QZjguLdmnR9E9hZ9cklZEFuN0SpKMgbPhu0TodPbpA%3D%3D&numOfRows=10&pageNo=1&base_date=20250329&base_time=0600&nx=55&ny=127&dataType=JSON";
-        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
-        System.out.println(response);
-        return response.getBody();
     }
 }

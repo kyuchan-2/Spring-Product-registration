@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+
 @Entity
 @Getter
 @Setter
@@ -24,6 +25,6 @@ public class Product {
     @Column(length = 100)
     private String company;
     private LocalDate release_date;
-
+    private String category;
 
 }
